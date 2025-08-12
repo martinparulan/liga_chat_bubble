@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo Website</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+    </style>
+    <!-- Add this for emoji support-->
+    <meta charset="UTF-8" />
+  </head>
+  <!-- Point bubble to your existing Cloud Run chatbot -->
+  <script>
+    window.PHOSPHO_CHAT_BUBBLE_SERVER_URL = "https://liga-chatbot-532186976426.us-central1.run.app";
+  </script>
+  <!-- Load the built bubble script from the repo and configure endpoint/fields -->
+  <script src="./app/static/chat-bubble.js"
+          data-endpoint-path="/run_sse"
+          data-payload-key="newMessage.parts[0].text"
+          data-extra-payload='{"appName":"liga_chatbot","userId":"user","sessionId":"@auto","newMessage":{"role":"user"}}'
+          data-stream="true"
+          async></script>
+  <body>
+    <h1>This is a demo website</h1>
+    <p>Look, you can now chat with an AI assistant here.</p>
+  </body>
+</html>
