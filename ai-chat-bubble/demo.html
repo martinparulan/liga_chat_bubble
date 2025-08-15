@@ -13,15 +13,31 @@
   </head>
   <!-- Point bubble to your existing Cloud Run chatbot -->
   <script>
-    window.PHOSPHO_CHAT_BUBBLE_SERVER_URL = "https://liga-chatbot-532186976426.us-central1.run.app";
+    (function () {
+      const UID_KEY = 'phospho_uid';
+      let userId = localStorage.getItem(UID_KEY);
+      if (!userId) {
+        userId = (crypto.randomUUID && crypto.randomUUID()) || (Date.now() + '-' + Math.random().toString(36).slice(2));
+        localStorage.setItem(UID_KEY, userId);
+      }
+
+      window.PHOSPHO_CHAT_BUBBLE_SERVER_URL = "https://liga-chatbot-532186976426.us-central1.run.app";
+
+      const s = document.createElement('script');
+      s.src = "https://cdn.jsdelivr.net/gh/martinparulan/liga_chat_bubble@534d36a54c0823744ce50a0bb6916400054fe350/ai-chat-bubble/app/static/chat-bubble.js";
+      s.defer = true;
+      s.setAttribute('data-endpoint-path', '/run_sse');
+      s.setAttribute('data-payload-key', 'newMessage.parts[0].text');
+      s.setAttribute('data-stream', 'true');
+      s.setAttribute('data-extra-payload', JSON.stringify({
+        appName: 'liga_chatbot',
+        userId,
+        sessionId: '@auto',
+        newMessage: { role: 'user' }
+      }));
+      document.head.appendChild(s);
+    })();
   </script>
-  <!-- Load the built bubble script from the repo and configure endpoint/fields -->
-  <script src="./app/static/chat-bubble.js"
-          data-endpoint-path="/run_sse"
-          data-payload-key="newMessage.parts[0].text"
-          data-extra-payload='{"appName":"liga_chatbot","userId":"user","sessionId":"@auto","newMessage":{"role":"user"}}'
-          data-stream="true"
-          defer></script>
   <body>
     <h1>This is a demo website</h1>
     <p>Look, you can now chat with an AI assistant here.</p>
